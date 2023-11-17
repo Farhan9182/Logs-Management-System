@@ -12,6 +12,17 @@ const createLog = async (req, res) => {
         res.status(500).json({ message: 'Error adding new log' });
     }
 };
+const bulkCreateLogs = async (req, res) => {
+    try {
+        const logsData = req.body;
+        await Log.insertMany(logsData);
+
+        res.status(200).send('Logs added successfully');
+    } catch (error) {
+        console.error('Error bulk create logs:', error);
+        res.status(500).json({ message: 'Error bulk create logs' });
+    }
+};
 const getLog = async (req, res) => {
     try {
         const { level, message, resourceId, startTimestamp, endTimestamp, traceId, spanId, commit, parentResourceId, regex } = req.query;
@@ -33,9 +44,9 @@ const getLog = async (req, res) => {
         if (startTimestamp && endTimestamp) {
             query.timestamp = { $gte: new Date(startTimestamp), $lte: new Date(endTimestamp) };
         } else if (startTimestamp) {
-            query.timestamp = { $gte: new Date(startTimestamp), $lte: new Date() };
+            query.timestamp = { $gte: new Date(startTimestamp) };
         } else if (endTimestamp) {
-            query.timestamp = { $gte: new Date(), $lte: new Date(endTimestamp) };
+            query.timestamp = { $lte: new Date(endTimestamp) };
         }
 
         const filteredLogs = await Log.find(query).exec();
@@ -47,4 +58,4 @@ const getLog = async (req, res) => {
     }
 };
 
-module.exports = {getLog, createLog};
+module.exports = {getLog, createLog, bulkCreateLogs};
