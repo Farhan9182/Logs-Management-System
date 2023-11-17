@@ -13,5 +13,15 @@ const logSchema = new mongoose.Schema({
     }
 }, { collection: 'logs' });
 
+logSchema.index({
+  level: 'text',
+  message: 'text',
+  resourceId: 'text',
+  traceId: 'text',
+  spanId: 'text',
+  commit: 'text',
+  'metadata.parentResourceId': 'text',
+});
+
 const Log = mongoose.model('logs', logSchema);
 module.exports = Log;
