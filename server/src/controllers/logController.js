@@ -25,7 +25,7 @@ const bulkCreateLogs = async (req, res) => {
 };
 const getLog = async (req, res) => {
     try {
-        const { level, message, resourceId, startTimestamp, endTimestamp, traceId, spanId, commit, parentResourceId, regex } = req.query;
+        const { textSearch, level, message, resourceId, startTimestamp, endTimestamp, traceId, spanId, commit, parentResourceId, regex } = req.query;
 
         // Query based on the parameters
         const query = {};
@@ -49,7 +49,13 @@ const getLog = async (req, res) => {
             query.timestamp = { $lte: new Date(endTimestamp) };
         }
 
-        const filteredLogs = await Log.find(query).exec();
+        if (textSearch) {
+            query.$text = { $search: textSearch };
+        }
+
+        const filteredLogs = await Log.find(query, { score: { $meta: 'textScore' } })
+                            .sort({ score: { $meta: 'textScore' } })
+                            .exec();
 
         res.json(filteredLogs);
     } catch (error) {
