@@ -10,6 +10,14 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS setup
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 // DB Connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -28,6 +36,17 @@ const logRoutes = require('./routes/logs');
 
 app.use('/logs', logRoutes);
 
+app.get('/', (req, res) =>
+  res.status(200).json({
+    code: 200,
+    message: 'running normally...',
+    result: {
+      name: "Logs Management Service",
+      env: "local",
+      version: 1.0,
+    },
+  }),
+);
 /* Error handling */
 app.use((req, res) => {
     const error = new Error('route not found');
