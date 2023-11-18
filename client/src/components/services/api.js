@@ -5,7 +5,7 @@ const API_TOKEN = process.env.REACT_APP_API_TOKEN;
 const instance = axios.create({baseURL: API_BASE_URL});
 
 instance.interceptors.request.use((config) => {
-    if (token) {
+    if (API_TOKEN) {
         config.headers.Authorization = `Bearer ${API_TOKEN}`;
     }
     return config;
@@ -13,7 +13,8 @@ instance.interceptors.request.use((config) => {
 
 export const createLogApi = async (logData) => {
     try {
-        const response = await instance.post('/logs/create', logData);
+        const structuredLogData = {...logData, metadata: {parentResourceId: logData.parentResourceId}};
+        const response = await instance.post('/logs/create', structuredLogData);
         return response;
     } catch (error) {
         return error.response;
