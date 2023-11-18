@@ -25,7 +25,15 @@ const bulkCreateLogs = async (req, res) => {
 };
 const getLog = async (req, res) => {
     try {
-        const { textSearch, level, message, resourceId, startTimestamp, endTimestamp, traceId, spanId, commit, parentResourceId, regex } = req.query;
+        const { textSearch, level, message, resourceId, startTimestamp, endTimestamp, traceId, spanId, commit, parentResourceId} = req.query; // filters params
+        const { page = 1, limit = 10 } = req.query; // pagination params
+
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+
+        if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
+            return res.status(400).json({ message: 'Invalid page or limit parameter' });
+        }
 
         // Query based on the parameters
         const query = {};
@@ -53,9 +61,11 @@ const getLog = async (req, res) => {
             query.$text = { $search: textSearch };
             filteredLogs = await Log.find(query, { score: { $meta: 'textScore' } })
                                 .sort({ score: { $meta: 'textScore' } })
+                                .skip((pageNumber - 1) * limitNumber)
+                                .limit(limitNumber)
                                 .exec();
         } else {
-            filteredLogs = await Log.find(query).exec();
+            filteredLogs = await Log.find(query).skip((pageNumber - 1) * limitNumber).limit(limitNumber).exec();
         }
 
 

@@ -3,6 +3,8 @@ import {getLogsApi} from './services/api';
 
 const ViewLogs = () => {
     const [logs, setLogs] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [logsPerPage, setLogsPerPage] = useState(10);
     const [filters, setFilters] = useState({
         level: '',
         message: '',
@@ -19,15 +21,20 @@ const ViewLogs = () => {
 
     useEffect(() => {
         fetchLogs();
-    }, []);
+    }, [currentPage]);
 
     const fetchLogs = async () => {
         try {
             setError('');
-            const response = await getLogsApi(buildQueryString(filters, textSearch));
+            const response = await getLogsApi(buildQueryString(filters, textSearch, currentPage, logsPerPage));
             const responseOk = (response.status >= 200 && response.status <=299);
             if (responseOk) {
-                setLogs(response.data);
+                if (response.data.length === 0) {
+                    setCurrentPage((prevPage) => prevPage - 1);
+                    alert("No more records to show");
+                } else {
+                    setLogs(response.data);
+                }
             } else {
                 setError(response.data.message || 'Error fetching logs');
             }
@@ -46,7 +53,7 @@ const ViewLogs = () => {
         fetchLogs();
     };
 
-    const buildQueryString = (filters, textSearch) => {
+    const buildQueryString = (filters, textSearch, currentPage, logsPerPage) => {
         const queryString = Object.entries(filters)
         .filter(([key, value]) => value !== '')
         .map(([key, value]) => {
@@ -61,7 +68,9 @@ const ViewLogs = () => {
         })
         .join('&');
 
-        return textSearch !== '' ? `${queryString}&textSearch=${textSearch}` : queryString;
+        const paginationParams = `page=${currentPage}&limit=${logsPerPage}`;
+        return textSearch !== '' ? `${queryString}&${paginationParams}&textSearch=${textSearch}` 
+                                : `${queryString}&${paginationParams}`;
     };
 
     const handleResetFilters = async () => {
@@ -188,6 +197,23 @@ const ViewLogs = () => {
                     onClick={handleResetFilters}
                 >
                     Reset Filters
+                </button>
+            </div>
+            <div className="flex justify-between mb-4">
+                <button
+                    type="button"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+                    onClick={() => setCurrentPage((prevPage) => prevPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+                <button
+                    type="button"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+                    onClick={() => setCurrentPage((prevPage) => prevPage + 1)}
+                >
+                    Next
                 </button>
             </div>
             <div>
