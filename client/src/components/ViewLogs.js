@@ -38,7 +38,8 @@ const ViewLogs = () => {
     };
 
     const handleInputChange = (e) => {
-        setFilters((prevFilters) => ({ ...prevFilters, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
     };
 
     const handleTextSearch = () => {
@@ -48,7 +49,17 @@ const ViewLogs = () => {
     const buildQueryString = (filters, textSearch) => {
         const queryString = Object.entries(filters)
         .filter(([key, value]) => value !== '')
-        .map(([key, value]) => `${key}=${value}`)
+        .map(([key, value]) => {
+            // Convert datetime values to ISO string format
+            if (key.includes('Timestamp')) {
+                const localDate = new Date(value);
+                const offset = localDate.getTimezoneOffset() * 60000;
+                const adjustedDate = new Date(localDate.getTime() - offset);
+                console.log(`${adjustedDate.toISOString()}`);
+                return `${key}=${adjustedDate.toISOString()}`;
+            }
+            return `${key}=${value}`;
+        })
         .join('&');
 
         return textSearch !== '' ? `${queryString}&textSearch=${textSearch}` : queryString;
