@@ -6,7 +6,7 @@ const createLog = async (req, res) => {
         const newLog = new Log(logData);
         await newLog.save();
 
-        res.status(200).send('Log added successfully');
+        res.status(200).send({message:'Log added successfully'});
     } catch (error) {
         console.error('Error adding new log:', error);
         res.status(500).json({ message: 'Error adding new log' });
@@ -17,7 +17,7 @@ const bulkCreateLogs = async (req, res) => {
         const logsData = req.body;
         await Log.insertMany(logsData);
 
-        res.status(200).send('Logs added successfully');
+        res.status(200).send({message: 'Logs added successfully'});
     } catch (error) {
         console.error('Error bulk create logs:', error);
         res.status(500).json({ message: 'Error bulk create logs' });
@@ -48,14 +48,16 @@ const getLog = async (req, res) => {
         } else if (endTimestamp) {
             query.timestamp = { $lte: new Date(endTimestamp) };
         }
-
-        if (textSearch) {
+        let filteredLogs;
+        if (textSearch && textSearch !== "") {
             query.$text = { $search: textSearch };
+            filteredLogs = await Log.find(query, { score: { $meta: 'textScore' } })
+                                .sort({ score: { $meta: 'textScore' } })
+                                .exec();
+        } else {
+            filteredLogs = await Log.find(query).exec();
         }
 
-        const filteredLogs = await Log.find(query, { score: { $meta: 'textScore' } })
-                            .sort({ score: { $meta: 'textScore' } })
-                            .exec();
 
         res.json(filteredLogs);
     } catch (error) {
