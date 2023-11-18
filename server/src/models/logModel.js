@@ -13,6 +13,7 @@ const logSchema = new mongoose.Schema({
     }
 }, { collection: 'logs' });
 
+// index for full-text search
 logSchema.index({
   level: 'text',
   message: 'text',
@@ -22,6 +23,16 @@ logSchema.index({
   commit: 'text',
   'metadata.parentResourceId': 'text',
 });
+
+// index for individual fields
+logSchema.index({level: 1});
+logSchema.index({message: "text"});
+logSchema.index({resourceId: 1});
+logSchema.index({traceId: 1});
+logSchema.index({spanId: 1});
+logSchema.index({commit: 1});
+logSchema.index({'metadata.parentResourceId': 1});
+logSchema.index({ timestamp: -1 });
 
 const Log = mongoose.model('logs', logSchema);
 module.exports = Log;
