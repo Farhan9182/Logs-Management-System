@@ -1,0 +1,26 @@
+[
+    {
+        "level": "minor-error1",
+	    "message": "Server Restart",
+        "resourceId": "server-007",
+        "timestamp": "2023-09-16T08:00:00Z",
+        "traceId": "abc-xyz-007",
+        "spanId": "span-007",
+        "commit": "5e5342f",
+        "metadata": {
+            "parentResourceId": "server-007"
+        }
+    },
+    {
+        "level": "minor-error2",
+	    "message": "Server Restart",
+        "resourceId": "server-007",
+        "timestamp": "2023-09-16T08:00:00Z",
+        "traceId": "abc-xyz-007",
+        "spanId": "span-007",
+        "commit": "5e5342f",
+        "metadata": {
+            "parentResourceId": "server-007"
+        }
+    }
+]

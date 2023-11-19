@@ -4,7 +4,8 @@
   "description": "A log ingestor system that can efficiently handle vast volumes of log data, and offer a simple interface for querying this data using full-text search or specific field filters.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd src && node index.js"
   },
   "author": "Farhan Khan",
   "license": "ISC",

@@ -15,7 +15,7 @@ project-root
 |-- server (Backend)
 ```
 ## -------------------- System Design --------------------------------
-> The system consists of a Node.js backend using Express for handling log ingestion and queries. MongoDB is employed as the database, and the frontend is developed using React. The directory structure is organized into 'client' for the frontend and 'server' for the backend.
+> The system consists of a Node.js backend using Express for handling log ingestion and queries. MongoDB is employed as the database along with Mongoose as the ODM for interacting with the DB, and the frontend is developed using React along with TailwindCSS for UI design. The directory structure is organized into 'client' for the frontend and 'server' for the backend.
 
 ## ----------------- Features Implemented ----------------------------
  - Log ingestion over HTTP on port 3000, endpoint "/logs/create" and "/logs/bulkCreate"
