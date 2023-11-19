@@ -57,3 +57,6 @@ npm start
 _Access the application at_ [ http://localhost:3006 ]
 # Postman Collection
 [ https://www.postman.com/bold-shuttle-336904/workspace/dyte/collection/16211040-c609db8d-823b-4cca-b7f5-ae5f3db5f231?action=share&creator=16211040 ]
+
+# Video Demo Link
+[ https://drive.google.com/file/d/1iuSy_5XGuVT8L6YoRiQccs8As8M1edaR/view?usp=sharing ]
