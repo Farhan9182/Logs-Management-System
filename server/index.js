@@ -32,7 +32,7 @@ db.once('open', () => {
 });
 
 // Routes
-const logRoutes = require('./routes/logs');
+const logRoutes = require('./src/routes/logs');
 
 app.use('/logs', logRoutes);
 
