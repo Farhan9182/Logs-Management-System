@@ -60,3 +60,5 @@ _Access the application at_ [ http://localhost:3006 ]
 
 # Video Demo Link
 [ https://drive.google.com/file/d/1iuSy_5XGuVT8L6YoRiQccs8As8M1edaR/view?usp=sharing ]
+
+# Demo App Live at [ https://logs-management-system-fe.vercel.app/ ]
